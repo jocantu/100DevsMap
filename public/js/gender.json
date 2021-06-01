@@ -1,0 +1,18 @@
+[
+  {
+    "gender": "male",
+    "count": 2000
+  },
+  {
+    "gender": "female",
+    "count": 500
+  },
+  {
+    "gender": "intersex",
+    "count": 200
+  },
+  {
+    "gender": "other",
+    "count": 700
+  }
+]

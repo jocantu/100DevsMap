@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.geodesic"></script>
+    <script src='https://unpkg.com/@turf/turf@6.3.0/turf.min.js'></script>
+    <script src='data/continents.js'></script>
+
+    <title>Loch Ness Monster</title>
+
+  </head>
+  <body>
+    <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button" onclick="openTab('Map')">100 Dev's Participants Map</button>
+      <button class="w3-bar-item w3-button" onclick="openTab('Form')">Register</button>
+      <button class="w3-bar-item w3-button" onclick="openTab('Stats')">Stats</button>
+    </div>
+    <div id="Map" class="w3-container tab">
+      <div id="mymap"></div>
+    </div>
+
+    <div id="Form" class="tab" style="display:none">
+      <h2>Register 100 Dev's participant</h2>
+      <form action="/devs/createDev" method='POST' name="register" onsubmit="return validateForm()">
+        <input type="text" name="nickname" placeholder="Nick Name" required>
+        <select name="ageGroup" required>
+          <option value="">&darr; Age group &darr;</option>
+          <option value="Under 18">Under 18</option>
+          <option value="18-24">18-24</option>
+          <option value="25-34">25-34</option>
+          <option value="35-44">35-44</option>
+          <option value="45-54">45-54</option>
+          <option value="55-64">55-64</option>
+          <option value="Above 64">Above 64</option>
+        </select>
+        <select name="gender" required>
+          <option value="">&darr; Gender &darr;</option>
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+          <option value="Non-binary">Non-binary</option>
+          <option value="Trasgender">Trasgender</option>
+          <option value="Intersex">Intersex</option>
+          <option value="Other">Other</option>
+          <option value="Anonymous">I prefer not to say</option>
+        </select>
+        <input name="lat" id="lat" type="hidden" required>
+        <input name="lng" id="lng" type="hidden" required>
+        <input name="nessDistance" id="nessDistance" type="hidden">
+        <input type="submit">
+      </form>
+      <div id="locationMap"></div>
+    </div>
+
+    <div id="Stats" class="tab" style="display:none">
+      <h2>Stats</h2>
+      <p id='count'></p>
+      <div class='canvas'>
+      <h3>Gender</h3>
+      </div>
+      <div id='ageGroups'>
+      <h3>Age Groups</h3>
+      </div>
+    </div>
+    <script src="js/main.js"></script>
+    <script src="js/locationMap.js"></script> 
+    <script>
+      var someFeatures = [
+      <% devs.forEach( el => { %>
+        {
+          "type": "Feature",
+          "properties": {
+              "nickname": '<%= el.nickname %>',
+              "popupContent": '<b>Nickname:</b> <%= el.nickname %> <br> I am <b><%= el.nessDistance %> km</b> away from the Loch Ness Monster',
+              "show_on_map": true
+          },
+          "geometry": {
+              "type": "Point",
+              "coordinates": [<%= el.lng %>, <%= el.lat %>]
+          }
+        },
+      <% }) %>
+      ];
+
+    L.geoJSON(someFeatures, {
+        onEachFeature: onEachFeature
+    }).addTo(map);
+
+    const genderData = <%- JSON.stringify(gender) %>
+    const data2 = <%- JSON.stringify(ageGroups) %>
+
+    
+    // Update users count
+    document.getElementById("count").innerHTML = `We have <b>${genderData.length.toString()}</b> 100Dev's participants registed in this platform.`
+    
+    </script>
+  
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+  <script src="js/d3.js"></script>
+
+  </body>
+</html>
